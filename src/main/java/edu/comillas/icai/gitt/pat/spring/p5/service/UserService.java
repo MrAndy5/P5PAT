@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * TODO#6
@@ -24,37 +25,70 @@ import java.util.Optional;
 @Service
 public class UserService implements UserServiceInterface {
 
-    public Token login(String email, String password) {
-        AppUser appUser = null;
-        if (appUser == null) return null;
+    @Autowired
+    private AppUserRepository appUserRepository;
 
+    @Autowired
+    private TokenRepository tokenRepository;
+
+
+    @Override
+    public Token login(String email, String password) {
+        //busco Usuario correcto
+        AppUser appUser = appUserRepository.findByEmail(email);
+        if (appUser == null || !appUser.getPassword().equals(password)) {
+            return null;
+        }
+        //Busco token
         Token token = null;
         if (token != null) return token;
-
+        //Si no existe, creo uno nuevo
         token = new Token();
-        return null;
+        token.setId(UUID.randomUUID().toString());
+        token.setAppUser(appUser);
+        return tokenRepository.save(token);
     }
-
+    @Override
     public AppUser authentication(String tokenId) {
-        return null;
+        //busco el token para autenticarlo
+        Token token = tokenRepository.findById(tokenId).orElse(null);
+        return token != null ? token.getAppUser() : null;
     }
-
+    @Override
     public ProfileResponse profile(AppUser appUser) {
-        return null;
+        //busco el usuario
+        ProfileResponse profileResponse = new ProfileResponse(appUser.getEmail(),
+                appUser.getName(), appUser.getRole());
+        return profileResponse;
     }
+    @Override
     public ProfileResponse profile(AppUser appUser, ProfileRequest profile) {
-        return null;
+        //Actualizar usuario
+        appUser.setName(profile.name());
+        appUser.setRole(profile.role());
+        appUserRepository.save(appUser);
+        return profile(appUser);
     }
+    @Override
     public ProfileResponse profile(RegisterRequest register) {
-        return null;
+        //Crear usuario
+        AppUser appUser = new AppUser();
+        appUser.setEmail(register.email());
+        appUser.setName(register.name());
+        appUser.setPassword(register.password());
+        appUser.setRole(register.role());
+        appUserRepository.save(appUser);
+        return profile(appUser);
     }
-
+    @Override
     public void logout(String tokenId) {
-
+        //Cerrar sesión y borrar token de sesión
+        tokenRepository.deleteById(tokenId);
     }
-
+    @Override
     public void delete(AppUser appUser) {
-
+        //Borrar usuario
+        appUserRepository.delete(appUser);
     }
 
 }
