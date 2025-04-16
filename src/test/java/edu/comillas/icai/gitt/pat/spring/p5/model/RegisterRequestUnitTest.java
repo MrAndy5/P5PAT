@@ -36,5 +36,31 @@ class RegisterRequestUnitTest {
         assertTrue(violations.isEmpty());
     }
 
+    @Test
+    public void testInvalidMailFormat(){
+        //Dado email no valido
+        RegisterRequest registro = new RegisterRequest("Nom",
+                "nombreemail.com", Role.USER, "aaaaaaA1");
+        //Cuando se valida
+        Set<ConstraintViolation<RegisterRequest>> violations =
+                validator.validate(registro);
+        //Entonces no es valido
+        assertTrue(violations.isEmpty());
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("email")));
+    }
+
+    @Test
+    public void testBlankName(){
+        //Dado nombre en blanco
+        RegisterRequest registro = new RegisterRequest("","valid@email.com",
+                Role.USER, "aaaaaaA1");
+        //Cuando se valida
+        Set<ConstraintViolation<RegisterRequest>> violations =
+                validator.validate(registro);
+        //Entonces no es valido
+        assertTrue(violations.isEmpty());
+        assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("name")));
+    }
+
 
 }

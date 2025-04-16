@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -54,11 +55,20 @@ class UserControllerIntegrationTest {
      * (no cumple condiciones)
      */
     @Test void registerInvalidPassword() throws Exception {
-        // Given ...
-
-        // When ...
-
-                // Then ...
+        // Given: peticion de registro con password inseguro
+            String badRequest = "{" +
+                    "\"name\":\"" + NAME + "\"," +
+                    "\"email\":\"" + EMAIL + "\"," +
+                    "\"role\":\"" + Role.USER + "\"," +
+                    "\"password\":\"1234\"}";
+        // When: realizo petición
+            ResultActions resultActions = this.mockMvc
+                    .perform(MockMvcRequestBuilders.post("/api/users")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(badRequest));
+        // Then: espero un 409
+            resultActions.andExpect(MockMvcResultMatchers.status().isConflict())
+                    .andExpect(MockMvcResultMatchers.content().string("Password not secure"));
 
     }
 }
