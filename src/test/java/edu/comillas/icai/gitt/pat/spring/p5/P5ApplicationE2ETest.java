@@ -24,8 +24,9 @@ class P5ApplicationE2ETest {
     private static final String EMAIL = "name@email.com";
     private static final String PASS = "aaaaaaA1";
 
-    @Autowired
-    TestRestTemplate client;
+    //@Autowired TestRestTemplate client;
+    //Cambio por un puerto definido para solventar erroes con el beans del autowired
+    private final TestRestTemplate client = new TestRestTemplate();
 
     @Test public void registerTest() {
         // Given ...
@@ -58,11 +59,38 @@ class P5ApplicationE2ETest {
      */
     @Test public void loginOkTest() {
         // Given ...
+        //Para realizar el login, primero hay que registrarse
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String registro = "{" +
+                "\"name\":\"" + NAME + "\"," +
+                "\"email\":\"" + EMAIL + "\"," +
+                "\"role\":\"" + Role.USER + "\"," +
+                "\"password\":\"" + PASS + "\"}";
+
+        //Realizo el registro
+        ResponseEntity<String> response = client.exchange(
+                "http://localhost:8080/api/users",
+                HttpMethod.POST, new HttpEntity<>(registro, headers), String.class);
 
         // When ...
+        //Una vez está el usuario registrado, realizo la petición de login
+        String Login = "{" +
+                "\"email\":\"" + EMAIL + "\"," +
+                "\"password\":\"" + PASS + "\"}";
 
+        ResponseEntity<String> loginResponse = client.exchange(
+                "http://localhost:8080/users/me/session",
+                HttpMethod.POST, new HttpEntity<>(Login, headers), String.class);
 
         // Then ...
+        //Espero un 201 y la cookie de sesión
+        //Assertions.assertEquals(HttpStatus.OK, loginResponse.getStatusCode());
+        //creo q debe ser el creado no el okey
+        Assertions.assertEquals(HttpStatus.CREATED, loginResponse.getStatusCode());
+        Assertions.assertTrue(loginResponse.getHeaders().containsKey("Set-Cookie"));
+        Assertions.assertTrue(loginResponse.getHeaders().getFirst("Set-Cookie").startsWith("session="));
 
     }
 }
