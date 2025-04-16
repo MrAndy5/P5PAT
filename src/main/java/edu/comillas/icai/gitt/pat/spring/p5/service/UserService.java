@@ -31,11 +31,13 @@ public class UserService implements UserServiceInterface {
     @Autowired
     private TokenRepository tokenRepository;
 
+    @Autowired
+    private Hashing hashing;
 
     @Override
     public Token login(String email, String password) {
         //busco Usuario correcto
-        AppUser appUser = appUserRepository.findByEmail(email);
+        /*AppUser appUser = appUserRepository.findByEmail(email);
         if (appUser == null || !appUser.getPassword().equals(password)) {
             return null;
         }
@@ -46,6 +48,24 @@ public class UserService implements UserServiceInterface {
         token = new Token();
         token.setId(UUID.randomUUID().toString());
         token.setAppUser(appUser);
+        return tokenRepository.save(token);*/
+        //TODO#6
+        //TODO#14
+        //busco Usuario correcto
+        AppUser appUser = appUserRepository.findByEmail(email);
+        if (appUser == null || !hashing.compare(appUser.getPassword(), password)) {
+            return null;
+        }
+
+        //Busco token
+        Token token = tokenRepository.findByAppUser(appUser);
+        if (token != null) return token;
+
+        //Si no existe, creo uno nuevo
+        token = new Token();
+        token.setId(UUID.randomUUID().toString());
+        token.setAppUser(appUser);
+        //Guardo el token en la base de datos
         return tokenRepository.save(token);
     }
     @Override
@@ -71,11 +91,22 @@ public class UserService implements UserServiceInterface {
     }
     @Override
     public ProfileResponse profile(RegisterRequest register) {
-        //Crear usuario
+        /*//Crear usuario
         AppUser appUser = new AppUser();
         appUser.setEmail(register.email());
         appUser.setName(register.name());
         appUser.setPassword(register.password());
+        appUser.setRole(register.role());
+        appUserRepository.save(appUser);
+        return profile(appUser);
+        TODO#6*/
+        //TODO#14
+        //Crear usuario
+        AppUser appUser = new AppUser();
+        appUser.setEmail(register.email());
+        appUser.setName(register.name());
+        //Hasheo el password
+        appUser.setPassword(hashing.hash(register.password()));
         appUser.setRole(register.role());
         appUserRepository.save(appUser);
         return profile(appUser);
