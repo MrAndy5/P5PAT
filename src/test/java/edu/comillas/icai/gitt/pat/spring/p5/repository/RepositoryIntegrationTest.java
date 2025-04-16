@@ -3,6 +3,8 @@ package edu.comillas.icai.gitt.pat.spring.p5.repository;
 import edu.comillas.icai.gitt.pat.spring.p5.entity.AppUser;
 import edu.comillas.icai.gitt.pat.spring.p5.entity.Token;
 import edu.comillas.icai.gitt.pat.spring.p5.model.Role;
+import edu.comillas.icai.gitt.pat.spring.p5.util.Hashing;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import java.util.UUID;
 class RepositoryIntegrationTest {
     @Autowired TokenRepository tokenRepository;
     @Autowired AppUserRepository appUserRepository;
+    //Añado hashing tras actualizar el TODO14
+    //@Autowired private Hashing hashing;
 
     /**
      * TODO#9
@@ -24,11 +28,12 @@ class RepositoryIntegrationTest {
      */
     @Test void saveTest() {
         // Given: dado ususario y token de sesión
+        Hashing hashing = new Hashing(); // Instancia de Hashing
         AppUser user = new AppUser();
         user.setName("name");
         user.setEmail("email@email.com");
         user.setRole(Role.USER);
-        user.setPassword("password23");
+        user.setPassword(hashing.hash("password23")); // Actualizado para usar el método de hashing
 
         // Guardar el usuario
         AppUser savedUser = appUserRepository.save(user);
@@ -63,11 +68,12 @@ class RepositoryIntegrationTest {
      */
     @Test void deleteCascadeTest() {
         // Given ...
+        Hashing hashing = new Hashing(); // Instancia de Hashing
         AppUser user = new AppUser();
         user.setName("name");
         user.setEmail("email@email.com");
         user.setRole(Role.USER);
-        user.setPassword("password23");
+        user.setPassword(hashing.hash("password23")); // Actualizado para usar el método de hashing
 
         // Guardar el usuario
         AppUser savedUser = appUserRepository.save(user);

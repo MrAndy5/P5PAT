@@ -28,6 +28,8 @@ class P5ApplicationE2ETest {
     //Cambio por un puerto definido para solventar erroes con el beans del autowired
     private final TestRestTemplate client = new TestRestTemplate();
 
+
+
     @Test public void registerTest() {
         // Given ...
         HttpHeaders headers = new HttpHeaders();
@@ -81,7 +83,7 @@ class P5ApplicationE2ETest {
                 "\"password\":\"" + PASS + "\"}";
 
         ResponseEntity<String> loginResponse = client.exchange(
-                "http://localhost:8080/users/me/session",
+                "http://localhost:8080/api/users/me/session",
                 HttpMethod.POST, new HttpEntity<>(Login, headers), String.class);
 
         // Then ...

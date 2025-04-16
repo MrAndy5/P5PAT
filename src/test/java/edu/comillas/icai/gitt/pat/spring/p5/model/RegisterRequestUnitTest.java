@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -45,7 +46,7 @@ class RegisterRequestUnitTest {
         Set<ConstraintViolation<RegisterRequest>> violations =
                 validator.validate(registro);
         //Entonces no es valido
-        assertTrue(violations.isEmpty());
+        assertFalse(violations.isEmpty());
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("email")));
     }
 
@@ -58,7 +59,7 @@ class RegisterRequestUnitTest {
         Set<ConstraintViolation<RegisterRequest>> violations =
                 validator.validate(registro);
         //Entonces no es valido
-        assertTrue(violations.isEmpty());
+        assertFalse(violations.isEmpty());
         assertTrue(violations.stream().anyMatch(v -> v.getPropertyPath().toString().equals("name")));
     }
 

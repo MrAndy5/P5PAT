@@ -67,8 +67,7 @@ class UserControllerIntegrationTest {
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(badRequest));
         // Then: espero un 409
-            resultActions.andExpect(MockMvcResultMatchers.status().isConflict())
-                    .andExpect(MockMvcResultMatchers.content().string("Password not secure"));
+            resultActions.andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
 }

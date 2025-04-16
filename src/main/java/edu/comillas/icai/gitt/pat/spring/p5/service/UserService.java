@@ -77,9 +77,12 @@ public class UserService implements UserServiceInterface {
     @Override
     public ProfileResponse profile(AppUser appUser) {
         //busco el usuario
-        ProfileResponse profileResponse = new ProfileResponse(appUser.getEmail(),
+        /*ProfileResponse profileResponse = new ProfileResponse(appUser.getEmail(),
                 appUser.getName(), appUser.getRole());
-        return profileResponse;
+        return profileResponse;*/
+        //Correccion de errores con los tests
+        return new ProfileResponse(appUser.getName(),
+                appUser.getEmail(), appUser.getRole());
     }
     @Override
     public ProfileResponse profile(AppUser appUser, ProfileRequest profile) {
