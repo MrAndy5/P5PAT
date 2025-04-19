@@ -8,10 +8,10 @@ POST http://localhost:8080/api/users
 Content-Type: application/json
 
 {
-  "name": "Juan",
-  "email": "testmail@email.com",
+  "name": "Pepe",
+  "email": "testmail1@email.com",
   "role": "USER",
-  "password": "123456A"
+  "password": "Hola1234"
 }
 
 ### Login
@@ -20,8 +20,8 @@ POST http://localhost:8080/api/users/me/session
 Content-Type: application/json
 
 {
-  "email":"test@email.com",
-  "password":"123456A"
+  "email":"testmail1@email.com",
+  "password": "Hola1234"
 }
 
 ### Profile
