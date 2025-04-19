@@ -63,7 +63,7 @@ Se completó la tabla con los endpoints del controlador `UserController`, incluy
 ### 🟩 TODO#12 – Pruebas REST Client (VSCode)
 - Registro, login y acceso a perfil usando cookie de sesión
 - Se ha comprobado existosamente usando REST Cliente en VsCode
-  ![REST Client aprobados](imagesReadme/tokensesion.jpg)
+- ![REST Client aprobados](imagesReadme/tokensesion.jpg)
 
 ### 🟩 TODO#13 – Test E2E con Cypress
 - Login correcto tras registro
